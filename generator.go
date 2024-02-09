@@ -52,7 +52,7 @@ func generateAngularProject(args map[string]string) (string, string) {
 	return args["d"] + "\\" + args["n"], args["n"]
 }
 
-func generateHeader(dir string) {
+func generateHeader() {
 	log.Println("Generating header component...")
 	path, err := exec.LookPath("ng")
 	if err != nil {
@@ -63,14 +63,14 @@ func generateHeader(dir string) {
 	cmdArgs := []string{"g", "c", "components/Header"}
 
 	cmd := exec.Command(path, cmdArgs...)
-	cmd.Dir = dir
+	cmd.Dir = targetDir
 	cmd.Stderr = &serr
 	if _, err := cmd.Output(); err != nil {
 		log.Fatal(serr.String())
 	}
 }
 
-func generateHttpService(dir string) {
+func generateHttpService() {
 	log.Println("Generating HTTP service...")
 	path, err := exec.LookPath("ng")
 	if err != nil {
@@ -81,7 +81,7 @@ func generateHttpService(dir string) {
 	cmdArgs := []string{"g", "s", "services/http"}
 
 	cmd := exec.Command(path, cmdArgs...)
-	cmd.Dir = dir
+	cmd.Dir = targetDir
 	cmd.Stderr = &serr
 	if _, err := cmd.Output(); err != nil {
 		log.Fatal(serr.String())

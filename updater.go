@@ -18,9 +18,9 @@ var standardScripts = []string{
 	"./node_modules/bootstrap/dist/js/bootstrap.min.js",
 }
 
-func updateAngularJson(projectDir string, projectName string) {
+func updateAngularJson() {
 	log.Println("Updating and optimising angular.json...")
-	file, err := os.Open(projectDir + "\\angular.json")
+	file, err := os.Open(targetDir + "\\angular.json")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,10 +33,10 @@ func updateAngularJson(projectDir string, projectName string) {
 
 	var cfg AngularConfig
 	json.Unmarshal(b, &cfg) // Get values
-	by, _ := cfg.ForProject(projectName)
+	by, _ := cfg.ForProject(applicationName)
 	json.Unmarshal(by, &cfg) // Update map values
 
-	if entry, ok := cfg.Projects[projectName]; ok {
+	if entry, ok := cfg.Projects[applicationName]; ok {
 		orgBudgets := []Budget{{
 			Type:           "initial",
 			MaximumWarning: "4mb",
@@ -52,7 +52,7 @@ func updateAngularJson(projectDir string, projectName string) {
 		entry.Architect.Build.DefaultConfiguration = "development"
 		entry.Architect.Build.Configurations.Production.Budgets = orgBudgets
 
-		cfg.Projects[projectName] = entry
+		cfg.Projects[applicationName] = entry
 	}
 
 	nb, err := json.MarshalIndent(cfg, "", "	")
@@ -60,5 +60,5 @@ func updateAngularJson(projectDir string, projectName string) {
 		log.Fatal(err)
 	}
 
-	os.WriteFile(projectDir+"\\angular.json", nb, 0644)
+	os.WriteFile(targetDir+"\\angular.json", nb, 0644)
 }

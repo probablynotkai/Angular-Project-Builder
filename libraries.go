@@ -5,7 +5,7 @@ import (
 	"os/exec"
 )
 
-func addLibrary(projectDir string, libName string) {
+func addLibrary(libName string) {
 	log.Printf("Adding library %s...\n", libName)
 	path, err := exec.LookPath("ng")
 	if err != nil {
@@ -18,6 +18,6 @@ func addLibrary(projectDir string, libName string) {
 		log.Fatal(cmd.Err)
 	}
 
-	cmd.Dir = projectDir
+	cmd.Dir = targetDir
 	cmd.Output()
 }

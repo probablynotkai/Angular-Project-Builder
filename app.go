@@ -4,16 +4,28 @@ import (
 	"errors"
 	"log"
 	"os"
+	"path/filepath"
 )
 
 var Red = "\033[31m"
 var Reset = "\033[0m"
+
+var rootDir string
+var targetDir string
+var applicationName string
 
 func main() {
 	flags, err := fetchMappedArgs(os.Args[1:])
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	ex, err := os.Executable()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rootDir = filepath.Dir(ex)
 
 	if len(flags) < 2 && os.Args[1] == "-help" {
 		log.Printf("\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n",
@@ -32,26 +44,26 @@ func main() {
 	}
 
 	// Create project
-	dir, name := generateAngularProject(flags)
+	targetDir, applicationName = generateAngularProject(flags)
 
 	// Add required libraries
-	addLibrary(dir, "@angular/material")
-	addLibrary(dir, "jquery")
-	addLibrary(dir, "bootstrap@4")
+	addLibrary("@angular/material")
+	addLibrary("jquery")
+	addLibrary("bootstrap@4")
 
 	// Update angular.json to add styles, scripts, and a few other things
-	updateAngularJson(dir, name)
+	updateAngularJson()
 
 	// Generate header component and http service
-	generateHeader(dir)
-	generateHttpService(dir)
+	generateHeader()
+	generateHttpService()
 
 	// Inject templates & assets
-	injectTemplates(dir)
-	injectAssets(dir)
-	injectFavicon(dir)
+	injectTemplates()
+	injectAssets()
+	injectFavicon()
 
-	log.Printf("Successfully generated the Angular project '%s' in the directory %s.\n", name, dir)
+	log.Printf("Successfully generated the Angular project '%s' in the directory %s.\n", applicationName, targetDir)
 	log.Println("")
 	log.Println(Red + "Please ensure that you change the <base href=\"/\"> element in your index.html in order to work with IIS." + Reset)
 	log.Println("")
