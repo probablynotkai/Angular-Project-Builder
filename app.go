@@ -28,9 +28,9 @@ func main() {
 	rootDir = filepath.Dir(ex)
 
 	if len(flags) < 2 && os.Args[1] == "-help" {
-		log.Printf("\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n",
+		log.Printf("\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n",
 			" ",
-			"Usage: angular-gen -d <targetDir> -n <appName>",
+			"Usage: angular-gen -d <targetDir> -n <appName> -l <libraries>",
 			" ",
 			"No \"QUOTATION MARKS\" are needed as flag values are parsed between-the-flag.",
 			" ",
@@ -39,7 +39,8 @@ func main() {
 			" ",
 			"Flags:",
 			" -d <directory> = Directory to create project",
-			" -n <name> = Name of the project")
+			" -n <appName> = Name of the project",
+			" -l <libraries> = (Optional) Comma separated list of libraries")
 		return
 	}
 
@@ -50,6 +51,15 @@ func main() {
 	addLibrary("@angular/material")
 	addLibrary("jquery")
 	addLibrary("bootstrap@4")
+
+	// Add additional libraries, if included
+	if flags["l"] != "" {
+		log.Println("Retrieving and adding custom libraries...")
+		customLibraries := split(",", flags["l"])
+		for _, v := range customLibraries {
+			addLibrary(v)
+		}
+	}
 
 	// Update angular.json to add styles, scripts, and a few other things
 	updateAngularJson()
@@ -67,6 +77,29 @@ func main() {
 	log.Println("")
 	log.Println(Red + "Please ensure that you change the <base href=\"/\"> element in your index.html in order to work with IIS." + Reset)
 	log.Println("")
+}
+
+func split(s string, delimiter string) []string {
+	args := []string{}
+
+	var ce string
+	for _, c := range s {
+		if string(c) != delimiter {
+			ce = ce + string(c)
+		} else {
+			if ce != "" {
+				args = append(args, ce)
+			}
+
+			ce = ""
+		}
+	}
+
+	if ce != "" {
+		args = append(args, ce)
+	}
+
+	return args
 }
 
 func fetchMappedArgs(args []string) (map[string]string, error) {
