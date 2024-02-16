@@ -2,6 +2,7 @@
 A CLI tool which builds Angular projects to your specification. Perfect for organisations.
 ```powershell
 Usage: angular-gen -d <targetDir> -n <appName> -l <libraries>
+
 Example: angular-gen -d C:\Users\Kai\Desktop -n MyApp -l ng-bootstrap,ngx-charts
 ```
 ## How to use
