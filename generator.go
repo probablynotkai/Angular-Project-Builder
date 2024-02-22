@@ -70,6 +70,24 @@ func generateHeader() {
 	}
 }
 
+func generateErrorLogger() {
+	log.Println("Generating error logger template...")
+	path, err := exec.LookPath("ng")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var serr bytes.Buffer
+	cmdArgs := []string{"g", "class", "logging/ErrorLogger"}
+
+	cmd := exec.Command(path, cmdArgs...)
+	cmd.Dir = targetDir
+	cmd.Stderr = &serr
+	if _, err := cmd.Output(); err != nil {
+		log.Fatal(serr.String())
+	}
+}
+
 func generateHttpService() {
 	log.Println("Generating HTTP service...")
 	path, err := exec.LookPath("ng")

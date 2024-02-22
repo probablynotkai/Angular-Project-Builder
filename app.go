@@ -66,6 +66,7 @@ func main() {
 
 	// Generate header component and http service
 	generateHeader()
+	generateErrorLogger()
 	generateHttpService()
 
 	// Inject templates & assets
